@@ -27,6 +27,7 @@ public class CrawlPayloadValidator {
     requirePresent(request.getSource(), "source", errors);
     requirePresent(request.getExternalId(), "external_id", errors);
     requirePresent(request.getRawText(), "raw_text", errors);
+    requirePresent(request.getTitle(), "title", errors);
     requirePresent(request.getUrl(), "url", errors);
     requirePresent(request.getCrawledAt(), "crawled_at", errors);
     return errors;

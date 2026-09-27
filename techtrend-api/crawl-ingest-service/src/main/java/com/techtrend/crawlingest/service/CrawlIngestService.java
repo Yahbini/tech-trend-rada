@@ -4,9 +4,12 @@ import com.techtrend.crawlingest.dto.request.CrawlWebhookRequest;
 import com.techtrend.crawlingest.entities.CrawlInvalidRecord;
 import com.techtrend.crawlingest.entities.RawCrawlLog;
 import com.techtrend.crawlingest.entities.Source;
+import com.techtrend.crawlingest.entities.UnclassifiedMention;
+import com.techtrend.crawlingest.matcher.TechAliasMatcher;
 import com.techtrend.crawlingest.repository.CrawlInvalidRecordRepository;
 import com.techtrend.crawlingest.repository.RawCrawlLogRepository;
 import com.techtrend.crawlingest.repository.SourceRepository;
+import com.techtrend.crawlingest.repository.UnclassifiedMentionRepository;
 import com.techtrend.crawlingest.validator.CrawlPayloadValidator;
 import com.techtrendradar.avro.TechMention;
 import lombok.AccessLevel;
@@ -32,16 +35,19 @@ public class CrawlIngestService {
   SourceRepository sourceRepository;
   RawCrawlLogRepository rawCrawlLogRepository;
   CrawlInvalidRecordRepository crawlInvalidRecordRepository;
+  UnclassifiedMentionRepository  unclassifiedMentionRepository;
+  TechAliasMatcher techAliasMatcher;
   TransactionTemplate transactionTemplate;
 
   /**
-   * Entry point for one webhook payload: always logs raw, stops at crawl_invalid_record on validation failure.
+   * Entry point for one webhook payload: always logs raw, then stops at crawl_invalid_record
+   * (bad payload) or unclassified_mention (no known technology in the title).
    */
   public void ingest(CrawlWebhookRequest request) {
-    boolean valid = Boolean.TRUE.equals(transactionTemplate.execute(status -> saveRawLog(request)));
+    boolean publishable = Boolean.TRUE.equals(transactionTemplate.execute(status -> saveRawLog(request)));
 
     // Publish after commit so a slow/down Kafka never holds a DB connection or rolls back the raw log.
-    if (valid) {
+    if (publishable) {
       publishMention(request);
     }
   }
@@ -75,6 +81,18 @@ public class CrawlIngestService {
       return false;
     }
 
+    List<String> technologies = techAliasMatcher.findCanonicalNames(request.getTitle());
+    if (technologies.isEmpty()) {
+      UnclassifiedMention unclassified = new UnclassifiedMention();
+      unclassified.setRawCrawlLog(rawLog);
+      unclassified.setRawText(request.getRawText());
+      unclassified.setCreatedAt(Instant.now());
+      unclassifiedMentionRepository.save(unclassified);
+      log.info("Unclassified mention, raw_crawl_log_id={}, title={}", rawLog.getId(), request.getTitle());
+      return false;
+    }
+
+    log.info("Classified mention, raw_crawl_log_id={}, technologies={}", rawLog.getId(), technologies);
     return true;
   }
 

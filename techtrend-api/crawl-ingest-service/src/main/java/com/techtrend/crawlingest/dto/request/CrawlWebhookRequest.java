@@ -18,6 +18,7 @@ import lombok.experimental.FieldDefaults;
 public class CrawlWebhookRequest {
   String source;
   String url;
+  String title;
   @JsonProperty("external_id")
   String externalId;
   @JsonProperty("raw_text")

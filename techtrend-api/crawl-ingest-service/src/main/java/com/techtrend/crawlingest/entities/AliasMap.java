@@ -28,4 +28,7 @@ public class AliasMap {
   @Column(name = "canonical_name", nullable = false)
   private String canonicalName;
 
+  @NotNull
+  @Column(name = "case_sensitive", nullable = false)
+  private Boolean caseSensitive;
 }
