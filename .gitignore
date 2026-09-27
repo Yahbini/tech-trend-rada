@@ -1,2 +1,5 @@
 /infra/docker/.env
 .idea/
+ai-docs/
+/techtrend-api/ai-docs/
+/techtrend-api/.claude/
