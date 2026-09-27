@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: mention-consumer-service
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:19092}
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      properties:
+        schema.registry.url: ${SCHEMA_REGISTRY_URL:http://localhost:18081}
+        specific.avro.reader: true
+      enable-auto-commit: false
+
+app:
+  kafka:
+    groups:
+      mention: mention-consumer-group
+
+cassandra:
+  contact-points: ${CASSANDRA_CONTACT_POINTS:localhost}
+  port: ${CASSANDRA_PORT:19042}
+  keyspace: tech_trend_radar
+  local-datacenter: datacenter1
+
+logging:
+  level:
+    org.apache.kafka: DEBUG

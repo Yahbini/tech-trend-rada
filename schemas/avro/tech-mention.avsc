@@ -1,0 +1,22 @@
+{
+    "type": "record",
+    "name": "TechMention",
+    "namespace": "com.techtrendradar.avro",
+    "fields": [
+        {
+            "name": "source", "type": "string"
+        },
+        {
+            "name": "external_id", "type": "string"
+        },
+        {
+            "name": "raw_text", "type": "string"
+        },
+        {
+            "name": "url", "type": "string"
+        },
+        {
+            "name": "crawled_at", "type": {"type": "long", "logicalType": "timestamp-millis"}
+        }
+    ]
+}

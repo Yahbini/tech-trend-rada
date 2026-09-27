@@ -1,0 +1,131 @@
+networks:
+  ttr-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  cassandra-data:
+  es-data:
+  n8n-data:
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    container_name: ttr-zookeeper
+    networks:
+      - ttr-network
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "${ZOOKEEPER_PORT:-2181}:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: ttr-kafka
+    depends_on:
+      - zookeeper
+    networks:
+      - ttr-network
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      # → Kafka mở 2 port: 29092 (nội bộ) và 9092 (cho host)
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      # → Kafka "chỉ đường" quay lại cho client:
+      #    - container khác → kafka:29092 (cố định, không đổi)
+      #    - máy host       → localhost:${KAFKA_PORT} (đọc .env, đã đổi thành 19092)
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:${KAFKA_PORT:-9092}
+      # → cả 2 listener đều không mã hóa (đủ dùng cho dev)
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      # → khi có nhiều broker, chúng nói chuyện qua listener nào (hiện 1 broker, không có tác dụng thực tế nhưng bắt buộc khai)
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      # → topic nội bộ Kafka chỉ replicate trên 1 broker (vì bạn chỉ có 1 broker — để 3 sẽ lỗi)
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "${KAFKA_PORT:-9092}:9092"
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.6.1
+    container_name: ttr-schema-registry
+    depends_on:
+      - kafka
+    networks:
+      - ttr-network
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:29092
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+    ports:
+      - "${SCHEMA_REGISTRY_PORT:-8081}:8081"
+
+  mysql:
+    image: mysql:8.0
+    container_name: ttr-mysql
+    networks:
+      - ttr-network
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    # Debezium (CDC) cần binlog dạng ROW để đọc được từng thay đổi dòng
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --log-bin=mysql-bin
+      --binlog-format=ROW
+      --server-id=1
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  cassandra:
+    image: cassandra:4.1
+    container_name: ttr-cassandra
+    networks:
+      - ttr-network
+    environment:
+      CASSANDRA_CLUSTER_NAME: ttr-cluster
+    ports:
+      - "${CASSANDRA_PORT:-9042}:9042"
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.1
+    container_name: ttr-elasticsearch
+    networks:
+      - ttr-network
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ports:
+      - "${ES_PORT:-9200}:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+
+  n8n:
+    image: n8nio/n8n:2.38.7
+    container_name: ttr-n8n
+    networks:
+      - ttr-network
+    environment:
+      N8N_HOST: ${N8N_HOST}
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+      # để n8n biết URL public của chính nó khi tạo webhook URL
+      WEBHOOK_URL: http://${N8N_HOST}:${N8N_PORT}/
+      GENERIC_TIMEZONE: Asia/Ho_Chi_Minh
+      TZ: Asia/Ho_Chi_Minh
+      # bật basic auth cho UI (khuyến nghị kể cả dev, vì n8n expose port ra host)
+      N8N_BASIC_AUTH_ACTIVE: "true"
+      N8N_BASIC_AUTH_USER: ${N8N_BASIC_AUTH_USER}
+      N8N_BASIC_AUTH_PASSWORD: ${N8N_BASIC_AUTH_PASSWORD}
+    ports:
+      - "${N8N_PORT}:5678"
+    volumes:
+      - n8n-data:/home/node/.n8n
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
