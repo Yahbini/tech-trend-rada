@@ -44,10 +44,10 @@ CREATE TABLE alias_map (
 
 CREATE TABLE raw_crawl_log (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    source_id BIGINT NOT NULL,
+    source_id BIGINT NULL,
     external_id VARCHAR(255),
     raw_payload JSON,
-    crawled_at DATETIME NOT NULL,
+    crawled_at DATETIME NULL,
     CONSTRAINT fk_raw_crawl_log_source FOREIGN KEY (source_id) REFERENCES source(id),
     INDEX idx_raw_crawl_log_source_crawled (source_id, crawled_at),
     INDEX idx_raw_crawl_log_external_id (external_id)
@@ -79,3 +79,11 @@ CREATE TABLE alert_log (
     telegram_message_id VARCHAR(100),
     UNIQUE KEY uk_alert_log_name_date (canonical_name, sent_date)
 );
+
+INSERT INTO source (name, code, crawl_interval_minutes, reliability_weight) VALUES
+  ('Hacker News',     'hackerNews',  30,    1.00),
+    ('GitHub Trending', 'github',      360,   1.00),
+    ('Reddit',          'reddit',      60,    1.00),
+    ('dev.to',          'devto',       60,    1.00),
+    ('TIOBE Index',     'tiobe',       43200, 1.00),
+    ('Product Hunt',    'productHunt', 60,    1.00);

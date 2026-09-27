@@ -1,5 +1,6 @@
 package com.techtrend.crawlingest.controller;
 
+import com.techtrend.crawlingest.dto.request.CrawlWebhookRequest;
 import com.techtrend.crawlingest.service.CrawlIngestService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("/webhook")
 @Slf4j
@@ -22,9 +21,9 @@ public class CrawlWebhookController {
     CrawlIngestService crawlIngestService;
 
     @PostMapping("/crawl")
-    public ResponseEntity<String> receiveCrawlPayload(@RequestBody Map<String, Object> payload) {
+    public ResponseEntity<String> receiveCrawlPayload(@RequestBody CrawlWebhookRequest payload) {
         log.info("Received crawl payload: {}", payload);
-        crawlIngestService.publishMention(payload);
+        crawlIngestService.ingest(payload);
         return ResponseEntity.ok("received");
     }
 }
