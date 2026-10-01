@@ -4,6 +4,7 @@ import com.techtrend.crawlingest.dto.request.CrawlWebhookRequest;
 import com.techtrend.crawlingest.entities.CrawlInvalidRecord;
 import com.techtrend.crawlingest.entities.RawCrawlLog;
 import com.techtrend.crawlingest.entities.Source;
+import com.techtrend.crawlingest.entities.Technology;
 import com.techtrend.crawlingest.entities.UnclassifiedMention;
 import com.techtrend.crawlingest.matcher.TechAliasMatcher;
 import com.techtrend.crawlingest.repository.CrawlInvalidRecordRepository;
@@ -16,6 +17,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -29,22 +32,24 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CrawlIngestService {
+  static int MAX_SAVE_ATTEMPTS = 3;
   // String -> key -> external_id
   KafkaTemplate<String, Object> kafkaTemplate;
   CrawlPayloadValidator validator;
   SourceRepository sourceRepository;
   RawCrawlLogRepository rawCrawlLogRepository;
   CrawlInvalidRecordRepository crawlInvalidRecordRepository;
-  UnclassifiedMentionRepository  unclassifiedMentionRepository;
+  UnclassifiedMentionRepository unclassifiedMentionRepository;
   TechAliasMatcher techAliasMatcher;
   TransactionTemplate transactionTemplate;
+  TechnologyService technologyService;
 
   /**
    * Entry point for one webhook payload: always logs raw, then stops at crawl_invalid_record
-   * (bad payload) or unclassified_mention (no known technology in the title).
+   * (bad payload), unclassified_mention (no known technology) or a re-crawl already counted.
    */
   public void ingest(CrawlWebhookRequest request) {
-    boolean publishable = Boolean.TRUE.equals(transactionTemplate.execute(status -> saveRawLog(request)));
+    boolean publishable = saveWithRetry(request);
 
     // Publish after commit so a slow/down Kafka never holds a DB connection or rolls back the raw log.
     if (publishable) {
@@ -93,7 +98,42 @@ public class CrawlIngestService {
     }
 
     log.info("Classified mention, raw_crawl_log_id={}, technologies={}", rawLog.getId(), technologies);
-    return true;
+    boolean counted = false;
+
+    // Lock rows in a fixed (alphabetical) order so two posts naming the same technologies cannot deadlock.
+    for (String canonicalName : technologies.stream().sorted().toList()) {
+      Technology technology = technologyService.findOrNew(canonicalName);
+      if (technologyService.isAlreadyCounted(technology, rawLog)) {
+        continue;
+      }
+      technology.increaseMentionCount();
+      technologyService.calculateMentionCountLast7d(technology);
+      technologyService.calculateMentionVelocity(technology);
+      technologyService.assignCategory(technology);
+      technologyService.assignIsNew(technology);
+      technologyService.upsert(technology);
+      technologyService.recordMention(technology, rawLog);
+      counted = true;
+    }
+    return counted;
+  }
+
+  /**
+   * Concurrent webhooks can deadlock or race on inserting the same new technology (UNIQUE canonical_name);
+   * the loser is rolled back and retried in a fresh transaction, where it sees the committed row.
+   */
+  private boolean saveWithRetry(CrawlWebhookRequest request) {
+    for (int attempt = 1; ;attempt++) {
+      try {
+        return Boolean.TRUE.equals(transactionTemplate.execute(status -> saveRawLog(request)));
+      } catch (PessimisticLockingFailureException | DataIntegrityViolationException e) {
+        if (attempt >= MAX_SAVE_ATTEMPTS) {
+          throw e;
+        }
+        log.warn("Retry saving crawl payload, external_id={}, attempt={}, cause={}",
+              request.getExternalId(), attempt, e.getClass().getSimpleName());
+      }
+    }
   }
 
   private void publishMention(CrawlWebhookRequest request) {
