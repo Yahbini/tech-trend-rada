@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: stream-processing-service
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:19092}
+    streams:
+      application-id: tech-trend-stream-processing
+      properties:
+        schema.registry.url: ${SCHEMA_REGISTRY_URL:http://localhost:18081}
+
+app:
+  kafka:
+    topics:
+      tech-updates: tech-updates
+      tech-mentions: tech-mentions
