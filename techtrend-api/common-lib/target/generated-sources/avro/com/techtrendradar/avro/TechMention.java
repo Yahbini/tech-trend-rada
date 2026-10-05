@@ -14,10 +14,10 @@ import org.apache.avro.message.SchemaStore;
 
 @org.apache.avro.specific.AvroGenerated
 public class TechMention extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -4761678274354458374L;
+  private static final long serialVersionUID = 8689879035022200092L;
 
 
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"TechMention\",\"namespace\":\"com.techtrendradar.avro\",\"fields\":[{\"name\":\"source\",\"type\":\"string\"},{\"name\":\"external_id\",\"type\":\"string\"},{\"name\":\"raw_text\",\"type\":\"string\"},{\"name\":\"url\",\"type\":\"string\"},{\"name\":\"crawled_at\",\"type\":{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"TechMention\",\"namespace\":\"com.techtrendradar.avro\",\"fields\":[{\"name\":\"source\",\"type\":\"string\"},{\"name\":\"external_id\",\"type\":\"string\"},{\"name\":\"raw_text\",\"type\":\"string\"},{\"name\":\"url\",\"type\":\"string\"},{\"name\":\"crawled_at\",\"type\":{\"type\":\"long\",\"logicalType\":\"timestamp-millis\"}},{\"name\":\"technology_ids\",\"type\":{\"type\":\"array\",\"items\":\"long\"},\"default\":[]}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static final SpecificData MODEL$ = new SpecificData();
@@ -81,6 +81,7 @@ public class TechMention extends org.apache.avro.specific.SpecificRecordBase imp
   private java.lang.CharSequence raw_text;
   private java.lang.CharSequence url;
   private java.time.Instant crawled_at;
+  private java.util.List<java.lang.Long> technology_ids;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -96,13 +97,15 @@ public class TechMention extends org.apache.avro.specific.SpecificRecordBase imp
    * @param raw_text The new value for raw_text
    * @param url The new value for url
    * @param crawled_at The new value for crawled_at
+   * @param technology_ids The new value for technology_ids
    */
-  public TechMention(java.lang.CharSequence source, java.lang.CharSequence external_id, java.lang.CharSequence raw_text, java.lang.CharSequence url, java.time.Instant crawled_at) {
+  public TechMention(java.lang.CharSequence source, java.lang.CharSequence external_id, java.lang.CharSequence raw_text, java.lang.CharSequence url, java.time.Instant crawled_at, java.util.List<java.lang.Long> technology_ids) {
     this.source = source;
     this.external_id = external_id;
     this.raw_text = raw_text;
     this.url = url;
     this.crawled_at = crawled_at.truncatedTo(java.time.temporal.ChronoUnit.MILLIS);
+    this.technology_ids = technology_ids;
   }
 
   @Override
@@ -120,6 +123,7 @@ public class TechMention extends org.apache.avro.specific.SpecificRecordBase imp
     case 2: return raw_text;
     case 3: return url;
     case 4: return crawled_at;
+    case 5: return technology_ids;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -131,6 +135,7 @@ public class TechMention extends org.apache.avro.specific.SpecificRecordBase imp
       null,
       null,
       new org.apache.avro.data.TimeConversions.TimestampMillisConversion(),
+      null,
       null
   };
 
@@ -149,6 +154,7 @@ public class TechMention extends org.apache.avro.specific.SpecificRecordBase imp
     case 2: raw_text = (java.lang.CharSequence)value$; break;
     case 3: url = (java.lang.CharSequence)value$; break;
     case 4: crawled_at = (java.time.Instant)value$; break;
+    case 5: technology_ids = (java.util.List<java.lang.Long>)value$; break;
     default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
@@ -239,6 +245,23 @@ public class TechMention extends org.apache.avro.specific.SpecificRecordBase imp
   }
 
   /**
+   * Gets the value of the 'technology_ids' field.
+   * @return The value of the 'technology_ids' field.
+   */
+  public java.util.List<java.lang.Long> getTechnologyIds() {
+    return technology_ids;
+  }
+
+
+  /**
+   * Sets the value of the 'technology_ids' field.
+   * @param value the value to set.
+   */
+  public void setTechnologyIds(java.util.List<java.lang.Long> value) {
+    this.technology_ids = value;
+  }
+
+  /**
    * Creates a new TechMention RecordBuilder.
    * @return A new TechMention RecordBuilder
    */
@@ -284,6 +307,7 @@ public class TechMention extends org.apache.avro.specific.SpecificRecordBase imp
     private java.lang.CharSequence raw_text;
     private java.lang.CharSequence url;
     private java.time.Instant crawled_at;
+    private java.util.List<java.lang.Long> technology_ids;
 
     /** Creates a new Builder */
     private Builder() {
@@ -316,6 +340,10 @@ public class TechMention extends org.apache.avro.specific.SpecificRecordBase imp
         this.crawled_at = data().deepCopy(fields()[4].schema(), other.crawled_at);
         fieldSetFlags()[4] = other.fieldSetFlags()[4];
       }
+      if (isValidValue(fields()[5], other.technology_ids)) {
+        this.technology_ids = data().deepCopy(fields()[5].schema(), other.technology_ids);
+        fieldSetFlags()[5] = other.fieldSetFlags()[5];
+      }
     }
 
     /**
@@ -343,6 +371,10 @@ public class TechMention extends org.apache.avro.specific.SpecificRecordBase imp
       if (isValidValue(fields()[4], other.crawled_at)) {
         this.crawled_at = data().deepCopy(fields()[4].schema(), other.crawled_at);
         fieldSetFlags()[4] = true;
+      }
+      if (isValidValue(fields()[5], other.technology_ids)) {
+        this.technology_ids = data().deepCopy(fields()[5].schema(), other.technology_ids);
+        fieldSetFlags()[5] = true;
       }
     }
 
@@ -545,6 +577,46 @@ public class TechMention extends org.apache.avro.specific.SpecificRecordBase imp
       return this;
     }
 
+    /**
+      * Gets the value of the 'technology_ids' field.
+      * @return The value.
+      */
+    public java.util.List<java.lang.Long> getTechnologyIds() {
+      return technology_ids;
+    }
+
+
+    /**
+      * Sets the value of the 'technology_ids' field.
+      * @param value The value of 'technology_ids'.
+      * @return This builder.
+      */
+    public com.techtrendradar.avro.TechMention.Builder setTechnologyIds(java.util.List<java.lang.Long> value) {
+      validate(fields()[5], value);
+      this.technology_ids = value;
+      fieldSetFlags()[5] = true;
+      return this;
+    }
+
+    /**
+      * Checks whether the 'technology_ids' field has been set.
+      * @return True if the 'technology_ids' field has been set, false otherwise.
+      */
+    public boolean hasTechnologyIds() {
+      return fieldSetFlags()[5];
+    }
+
+
+    /**
+      * Clears the value of the 'technology_ids' field.
+      * @return This builder.
+      */
+    public com.techtrendradar.avro.TechMention.Builder clearTechnologyIds() {
+      technology_ids = null;
+      fieldSetFlags()[5] = false;
+      return this;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public TechMention build() {
@@ -555,6 +627,7 @@ public class TechMention extends org.apache.avro.specific.SpecificRecordBase imp
         record.raw_text = fieldSetFlags()[2] ? this.raw_text : (java.lang.CharSequence) defaultValue(fields()[2]);
         record.url = fieldSetFlags()[3] ? this.url : (java.lang.CharSequence) defaultValue(fields()[3]);
         record.crawled_at = fieldSetFlags()[4] ? this.crawled_at : (java.time.Instant) defaultValue(fields()[4]);
+        record.technology_ids = fieldSetFlags()[5] ? this.technology_ids : (java.util.List<java.lang.Long>) defaultValue(fields()[5]);
         return record;
       } catch (org.apache.avro.AvroMissingFieldException e) {
         throw e;

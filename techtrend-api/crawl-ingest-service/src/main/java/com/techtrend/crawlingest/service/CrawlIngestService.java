@@ -49,15 +49,16 @@ public class CrawlIngestService {
    * (bad payload), unclassified_mention (no known technology) or a re-crawl already counted.
    */
   public void ingest(CrawlWebhookRequest request) {
-    boolean publishable = saveWithRetry(request);
+    List<Long> countedIds = saveWithRetry(request);
 
     // Publish after commit so a slow/down Kafka never holds a DB connection or rolls back the raw log.
-    if (publishable) {
-      publishMention(request);
+    if (!countedIds.isEmpty()) {
+      publishMention(request, countedIds);
     }
   }
 
-  private boolean saveRawLog(CrawlWebhookRequest request) {
+  // Ids of technologies counted by this payload; empty means nothing to publish.
+  private List<Long> saveRawLog(CrawlWebhookRequest request) {
     List<String> errors = new ArrayList<>(validator.validateRequiredFields(request));
     errors.addAll(validator.validateFormat(request));
 
@@ -83,7 +84,7 @@ public class CrawlIngestService {
       invalidRecord.setReason(String.join("; ", errors));
       crawlInvalidRecordRepository.save(invalidRecord);
       log.warn("Invalid crawl payload, raw_crawl_log_id={}, reasons={}", rawLog.getId(), errors);
-      return false;
+      return List.of();
     }
 
     List<String> technologies = techAliasMatcher.findCanonicalNames(request.getTitle());
@@ -94,11 +95,11 @@ public class CrawlIngestService {
       unclassified.setCreatedAt(Instant.now());
       unclassifiedMentionRepository.save(unclassified);
       log.info("Unclassified mention, raw_crawl_log_id={}, title={}", rawLog.getId(), request.getTitle());
-      return false;
+      return List.of();
     }
 
     log.info("Classified mention, raw_crawl_log_id={}, technologies={}", rawLog.getId(), technologies);
-    boolean counted = false;
+    List<Long> countedIds = new ArrayList<>();
 
     // Lock rows in a fixed (alphabetical) order so two posts naming the same technologies cannot deadlock.
     for (String canonicalName : technologies.stream().sorted().toList()) {
@@ -113,19 +114,20 @@ public class CrawlIngestService {
       technologyService.assignIsNew(technology);
       technologyService.upsert(technology);
       technologyService.recordMention(technology, rawLog);
-      counted = true;
+      countedIds.add(technology.getId());
     }
-    return counted;
+    return countedIds;
   }
 
   /**
    * Concurrent webhooks can deadlock or race on inserting the same new technology (UNIQUE canonical_name);
    * the loser is rolled back and retried in a fresh transaction, where it sees the committed row.
    */
-  private boolean saveWithRetry(CrawlWebhookRequest request) {
-    for (int attempt = 1; ;attempt++) {
+  private List<Long> saveWithRetry(CrawlWebhookRequest request) {
+    for (int attempt = 1; ; attempt++) {
       try {
-        return Boolean.TRUE.equals(transactionTemplate.execute(status -> saveRawLog(request)));
+        List<Long> countedIds = transactionTemplate.execute(status -> saveRawLog(request));
+        return countedIds != null ? countedIds : List.of();
       } catch (PessimisticLockingFailureException | DataIntegrityViolationException e) {
         if (attempt >= MAX_SAVE_ATTEMPTS) {
           throw e;
@@ -136,7 +138,7 @@ public class CrawlIngestService {
     }
   }
 
-  private void publishMention(CrawlWebhookRequest request) {
+  private void publishMention(CrawlWebhookRequest request, List<Long> technologyIds) {
     Instant crawledAt = Instant.parse(request.getCrawledAt());
 
     TechMention mention = TechMention.newBuilder()
@@ -145,9 +147,11 @@ public class CrawlIngestService {
                                      .setRawText(request.getRawText())
                                      .setUrl(request.getUrl())
                                      .setCrawledAt(crawledAt)
+                                     .setTechnologyIds(technologyIds)
                                      .build();
 
     kafkaTemplate.send("tech-mentions", request.getExternalId(), mention);
-    log.info("Published mention to tech-mentions: external_id={}", request.getExternalId());
+    log.info("Published mention to tech-mentions: external_id={}, technology_ids={}", request.getExternalId(),
+          technologyIds);
   }
 }
