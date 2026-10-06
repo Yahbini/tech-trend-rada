@@ -28,4 +28,12 @@ public class MentionTechMatch {
     Long epochMillis = isMatched() ? (Long) technology.get("first_seen_at") : null;
     return epochMillis == null ? null : Instant.ofEpochMilli(epochMillis);
   }
+
+  public CharSequence getCanonicalName() {
+    return isMatched() ? (CharSequence) technology.get("canonical_name") : null;
+  }
+
+  public Long getCategoryId() {
+    return  isMatched() ? (Long) technology.get("category_id") : null;
+  }
 }

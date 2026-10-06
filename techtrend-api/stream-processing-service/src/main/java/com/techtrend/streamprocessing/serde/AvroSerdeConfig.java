@@ -1,5 +1,6 @@
 package com.techtrend.streamprocessing.serde;
 
+import com.techtrendradar.avro.NewTechDetected;
 import com.techtrendradar.avro.TechMention;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
@@ -10,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Map;
 
 /**
- * Avro Serdes for the topology's input topics: tech-mentions (TechMention) and tech-updates (Debezium technology rows).
+ * Avro Serdes for the topology's topics: tech-mentions and tech-updates (input), new-tech-alerts (output).
  */
 @Configuration
 public class AvroSerdeConfig {
@@ -24,10 +25,16 @@ public class AvroSerdeConfig {
     return serde;
   }
 
+  @Bean
+  public SpecificAvroSerde<NewTechDetected> newTechDetectedValueSerde() {
+    SpecificAvroSerde<NewTechDetected> serde = new SpecificAvroSerde<>();
+    serde.configure(registryConfig(), false);
+    return serde;
+  }
+
   // Generic because Debezium auto-registers the tech-updates schema; there is no generated class.
   @Bean
   public TechUpdateSerdes techUpdateSerdes() {
-
     return new TechUpdateSerdes(genericAvroSerde(true), genericAvroSerde(false));
   }
 

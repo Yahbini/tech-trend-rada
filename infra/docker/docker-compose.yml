@@ -129,6 +129,9 @@ services:
       - ttr-network
     environment:
       CASSANDRA_CLUSTER_NAME: ttr-cluster
+      # Default heap is ~1/4 of visible RAM (~4G in WSL); dev data is tiny. Both vars required, values in M (no decimals).
+      MAX_HEAP_SIZE: 1536M
+      HEAP_NEWSIZE: 384M
     ports:
       - "${CASSANDRA_PORT:-9042}:9042"
     volumes:

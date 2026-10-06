@@ -1,0 +1,28 @@
+{
+    "type": "record",
+    "name": "NewTechDetected",
+    "namespace": "com.techtrendradar.avro",
+    "fields": [
+        {
+            "name": "technology_id", "type": "long"
+        },
+        {
+            "name": "canonical_name", "type": ["null", "string"], "default": null
+        },
+        {
+            "name": "category_id", "type": ["null", "long"], "default": null
+        },
+        {
+            "name": "source", "type": "string"
+        },
+        {
+            "name": "url", "type": "string"
+        },
+        {
+            "name": "external_id", "type": "string"
+        },
+        {
+            "name": "detected_at", "type": {"type": "long", "logicalType": "timestamp-millis"}
+        }
+    ]
+}

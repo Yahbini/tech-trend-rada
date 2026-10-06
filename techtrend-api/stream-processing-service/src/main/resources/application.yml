@@ -8,11 +8,13 @@ spring:
       application-id: tech-trend-stream-processing
       properties:
         schema.registry.url: ${SCHEMA_REGISTRY_URL:http://localhost:18081}
+      state-dir: ${KAFKA_STREAMS_STATE_DIR:/var/lib/techtrend/kafka-streams}
 
 app:
   kafka:
     topics:
       tech-updates: tech-updates
       tech-mentions: tech-mentions
+      new-tech-alerts: new-tech-alerts
   detection:
     new-tech-window: 24h

@@ -1,2 +1,4 @@
 com/techtrendradar/avro/TechMention.class
+com/techtrendradar/avro/NewTechDetected.class
+com/techtrendradar/avro/NewTechDetected$Builder.class
 com/techtrendradar/avro/TechMention$Builder.class
