@@ -18,3 +18,6 @@ app:
       new-tech-alerts: new-tech-alerts
   detection:
     new-tech-window: 24h
+  aggregation:
+    window-size: 1h
+    grace: 10m

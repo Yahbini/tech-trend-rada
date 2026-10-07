@@ -1,5 +1,6 @@
 package com.techtrend.streamprocessing.serde;
 
+import com.techtrendradar.avro.MentionWindowStats;
 import com.techtrendradar.avro.NewTechDetected;
 import com.techtrendradar.avro.TechMention;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
@@ -28,6 +29,13 @@ public class AvroSerdeConfig {
   @Bean
   public SpecificAvroSerde<NewTechDetected> newTechDetectedValueSerde() {
     SpecificAvroSerde<NewTechDetected> serde = new SpecificAvroSerde<>();
+    serde.configure(registryConfig(), false);
+    return serde;
+  }
+
+  @Bean
+  public SpecificAvroSerde<MentionWindowStats> mentionWindowStatsValueSerde() {
+    SpecificAvroSerde<MentionWindowStats> serde = new SpecificAvroSerde<>();
     serde.configure(registryConfig(), false);
     return serde;
   }

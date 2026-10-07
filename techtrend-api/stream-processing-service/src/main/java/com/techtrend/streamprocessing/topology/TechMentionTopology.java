@@ -1,5 +1,6 @@
 package com.techtrend.streamprocessing.topology;
 
+import com.techtrend.streamprocessing.time.CrawledAtTimestampExtractor;
 import com.techtrendradar.avro.TechMention;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import lombok.AccessLevel;
@@ -30,12 +31,14 @@ public class TechMentionTopology {
   public KStream<Long, TechMention> techMentionKStream(StreamsBuilder builder,
         @Value("${app.kafka.topics.tech-mentions}") String techMentionTopic) {
     // Messages published before technology_ids existed read as [] and yield no record.
-    return builder.stream(techMentionTopic, Consumed.with(Serdes.String(), techMentionValueSerde))
-                  .flatMap((externalId, mention) -> mention.getTechnologyIds().stream()
-                                                           .map(technologyId -> KeyValue.pair(technologyId, mention))
-                                                           .toList())
-                  // Per-record trace, off by default; enable with --logging.level.<this class>=DEBUG.
-                  .peek((technologyId, mention) -> log.debug("mention technology_id={} external_id={} source={}",
-                                                             technologyId, mention.getExternalId(), mention.getSource()));
+    return builder
+          .stream(techMentionTopic, Consumed.with(Serdes.String(), techMentionValueSerde)
+                                            .withTimestampExtractor(new CrawledAtTimestampExtractor()))
+          .flatMap((externalId, mention) -> mention.getTechnologyIds().stream()
+                                                   .map(technologyId -> KeyValue.pair(technologyId, mention))
+                                                   .toList())
+          // Per-record trace, off by default; enable with --logging.level.<this class>=DEBUG.
+          .peek((technologyId, mention) -> log.debug("mention technology_id={} external_id={} source={}",
+                technologyId, mention.getExternalId(), mention.getSource()));
   }
 }
