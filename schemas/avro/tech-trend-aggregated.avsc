@@ -1,0 +1,60 @@
+{
+  "type": "record",
+  "name": "TechTrendAggregated",
+  "namespace": "com.techtrendradar.avro",
+  "doc": "One closed hourly window per technology; ranking (top-N) is done by Elasticsearch at query time.",
+  "fields": [
+    {
+      "name": "technology_id",
+      "type": "long"
+    },
+    {
+      "name": "canonical_name",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "category_id",
+      "type": [
+        "null",
+        "long"
+      ],
+      "default": null
+    },
+    {
+      "name": "window_start",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    },
+    {
+      "name": "window_end",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }
+    },
+    {
+      "name": "mention_count",
+      "type": "long"
+    },
+    {
+      "name": "mention_velocity",
+      "type": "double"
+    },
+    {
+      "name": "source_counts",
+      "type": {
+        "type": "map",
+        "values": "long",
+        "avro.java.string": "String",
+        "java-key-class": "java.lang.String"
+      },
+      "default": {}
+    }
+  ]
+}

@@ -16,6 +16,7 @@ app:
       tech-updates: tech-updates
       tech-mentions: tech-mentions
       new-tech-alerts: new-tech-alerts
+      tech-trend-aggregated: tech-trend-aggregated
   detection:
     new-tech-window: 24h
   aggregation:

@@ -35,7 +35,7 @@ public class MentionVelocityProcessor implements Processor<Windowed<Long>, Menti
     Window window = record.key().window();
     long count = record.value().getMentionCount();
 
-    ValueAndTimestamp<Long> prev = prevCountStore.get(technologyId);
+    ValueAndTimestamp<Long> prev = prevCountStore.get(  technologyId);
     // Stored window not exactly one hour earlier = no mentions in the previous hour → 0.
     long prevCount = prev != null && prev.timestamp() == window.start() - (window.end() - window.start())
           ? prev.value() : 0L;

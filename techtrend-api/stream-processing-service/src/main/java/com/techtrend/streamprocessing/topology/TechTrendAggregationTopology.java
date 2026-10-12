@@ -2,21 +2,26 @@ package com.techtrend.streamprocessing.topology;
 
 import com.techtrend.streamprocessing.model.TechTrendWindowResult;
 import com.techtrend.streamprocessing.processor.MentionVelocityProcessorSupplier;
+import com.techtrend.streamprocessing.serde.TechUpdateSerdes;
 import com.techtrendradar.avro.MentionWindowStats;
 import com.techtrendradar.avro.TechMention;
+import com.techtrendradar.avro.TechTrendAggregated;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.avro.generic.GenericRecord;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.kstream.Grouped;
+import org.apache.kafka.streams.kstream.Joined;
 import org.apache.kafka.streams.kstream.KGroupedStream;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Named;
+import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.Suppressed;
 import org.apache.kafka.streams.kstream.TimeWindowedKStream;
 import org.apache.kafka.streams.kstream.TimeWindows;
@@ -95,5 +100,46 @@ public class TechTrendAggregationTopology {
         KStream<Windowed<Long>, MentionWindowStats> closedMentionCountKStream) {
     // POJO values have no serde: map to Avro before any repartitioning operation or to().
     return closedMentionCountKStream.process(new MentionVelocityProcessorSupplier(), Named.as("mention-velocity"));
+  }
+
+  @Bean
+  public KStream<Long, TechTrendAggregated> techTrendAggregatedKStream(
+        KStream<Long, TechTrendWindowResult> techTrendWindowResultKStream, KTable<Long, GenericRecord> techUpdatesTable,
+        SpecificAvroSerde<TechTrendAggregated> techTrendAggregatedValueSerde,
+        TechUpdateSerdes techUpdateSerdes,
+        @Value("${app.kafka.topics.tech-trend-aggregated}") String techTrendAggregatedTopic) {
+    KStream<Long, TechTrendAggregated> techTrendAggregatedKStream = techTrendWindowResultKStream
+          .mapValues(this::toTechTrendAggregated, Named.as("tech-trend-aggregated"))
+          .leftJoin(techUpdatesTable, this::withTechnology,
+                Joined.with(Serdes.Long(), techTrendAggregatedValueSerde, techUpdateSerdes.getValueSerde())
+                      .withName("tech-trend-tech-join"))
+          .peek((technologyId, aggregated) -> log.debug("aggregated {}", aggregated));
+    techTrendAggregatedKStream.to(techTrendAggregatedTopic,
+          Produced.with(Serdes.Long(), techTrendAggregatedValueSerde));
+    return techTrendAggregatedKStream;
+  }
+
+  private TechTrendAggregated withTechnology(TechTrendAggregated aggregated, GenericRecord technology) {
+    if (technology == null) {
+      return aggregated;
+    }
+    return TechTrendAggregated.newBuilder(aggregated)
+                              .setCanonicalName((CharSequence) technology.get("canonical_name"))
+                              .setCategoryId((Long) technology.get("category_id"))
+                              .build();
+  }
+
+  // canonical_name/category_id are still null here; filled by the tech-updates join.
+  private TechTrendAggregated toTechTrendAggregated(TechTrendWindowResult result) {
+    return TechTrendAggregated.newBuilder()
+                              .setTechnologyId(result.getTechnologyId())
+                              .setCanonicalName(result.getCanonicalName())
+                              .setCategoryId(result.getCategoryId())
+                              .setWindowStart(result.getWindowStart())
+                              .setWindowEnd(result.getWindowEnd())
+                              .setMentionCount(result.getMentionCount())
+                              .setMentionVelocity(result.getMentionVelocity())
+                              .setSourceCounts(result.getSourceCounts())
+                              .build();
   }
 }
