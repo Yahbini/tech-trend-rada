@@ -7,7 +7,6 @@ import com.techtrend.crawlingest.entities.TechnologyMention;
 import com.techtrend.crawlingest.repository.CategoryRepository;
 import com.techtrend.crawlingest.repository.TechnologyMentionRepository;
 import com.techtrend.crawlingest.repository.TechnologyRepository;
-import com.techtrend.crawlingest.service.interfaces.CrudIF;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,7 +20,7 @@ import java.time.temporal.ChronoUnit;
 @Service
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class TechnologyService implements CrudIF<Technology, String> {
+public class TechnologyService {
   static String OTHER_CATEGORY_CODE = "other";
   TechnologyRepository technologyRepository;
   TechnologyMentionRepository technologyMentionRepository;
@@ -47,15 +46,6 @@ public class TechnologyService implements CrudIF<Technology, String> {
                                                            .mentionedAt(rawCrawlLog.getCrawledAt())
                                                            .build();
     technologyMentionRepository.save(technologyMention);
-  }
-
-  @Override
-  public Technology create(String canonicalName) {
-    Technology technology = Technology.builder()
-                                      .canonicalName(canonicalName)
-                                      .build();
-
-    return technologyRepository.save(technology);
   }
 
   public Technology findOrNew(String canonicalName) {

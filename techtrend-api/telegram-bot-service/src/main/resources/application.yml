@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: telegram-bot-service
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:19092}
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.LongDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.KafkaAvroDeserializer
+        schema.registry.url: ${SCHEMA_REGISTRY_URL:http://localhost:18081}
+        specific.avro.reader: true # đổ kết quả vào class NewTechDetected của common-lib, không dùng GenericRecord.
+    listener:
+      ack-mode: manual-immediate
+
+app:
+  kafka:
+    topics:
+      new-tech-alerts: new-tech-alerts
+    groups:
+      alert: telegram-bot-group
