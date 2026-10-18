@@ -22,3 +22,15 @@ app:
       new-tech-alerts: new-tech-alerts
     groups:
       alert: telegram-bot-group
+  telegram:
+    base-url: ${TELEGRAM_BASE_URL:https://api.telegram.org}
+    bot-token: ${TELEGRAM_BOT_TOKEN}
+    chat-id: ${TELEGRAM_CHAT_ID}
+    connect-timeout: 5s
+    read-timeout: 10s
+    retry:
+      max-retries: 3
+      delay: 1s
+      multiplier: 2
+      timeout: 2m
+      max-retry-after: 60s
