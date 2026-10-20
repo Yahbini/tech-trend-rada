@@ -252,7 +252,7 @@ spsreset() {
 # Vd: whpost test-1 "Rust 2.0 released" · whpost test-2 "Ansible tips" reddit
 whpost() {
   local id="${1:?external_id?}" title="${2:?title?}" src="${3:-hackerNews}"
-  curl -s -w " (HTTP %{http_code})\n" -X POST http://localhost:8080/webhook/crawl \
+  curl -s -w " (HTTP %{http_code})\n" -X POST http://localhost:18080/webhook/crawl \
     -H "Content-Type: application/json" \
     -d "{\"source\":\"$src\",\"external_id\":\"$id\",\"title\":\"$title\",\"raw_text\":\"$title\",\"url\":\"http://test.local/$id\",\"crawled_at\":\"$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)\"}"
 }

@@ -1,6 +1,8 @@
 spring:
   application:
     name: telegram-bot-service
+  config:
+    import: optional:file:../../infra/docker/.env[.properties]
 
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:13306}/${MYSQL_DATABASE:tech_trend_radar}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC

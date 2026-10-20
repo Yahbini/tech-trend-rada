@@ -15,6 +15,7 @@
         <module>mention-consumer-service</module>
         <module>stream-processing-service</module>
         <module>telegram-bot-service</module>
+        <module>es-sink-consumer-service</module>
     </modules>
 
     <repositories>
