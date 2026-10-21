@@ -23,6 +23,7 @@ import org.springframework.web.client.RestClientException;
 public class NewTechAlertListener {
   NewTechAlertService newTechAlertService;
 
+  // Ack only after ES accepted the doc; failures propagate so the error handler re-seeks this offset.
   @KafkaListener(topics = "${app.kafka.topics.new-tech-alerts}", groupId = "${app.kafka.groups.alert}")
   public void onMessage(ConsumerRecord<Long, NewTechDetected> record, Acknowledgment ack) {
     try {
