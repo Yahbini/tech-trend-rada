@@ -1,4 +1,4 @@
-package com.techtrend.mentionconsumer.mapper;
+package com.techtrend.mentionconsumer.record;
 
 import java.time.Instant;
 import java.time.LocalDate;
