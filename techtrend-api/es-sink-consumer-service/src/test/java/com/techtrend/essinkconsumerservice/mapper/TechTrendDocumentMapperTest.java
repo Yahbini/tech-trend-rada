@@ -2,7 +2,7 @@ package com.techtrend.essinkconsumerservice.mapper;
 
 import co.elastic.clients.json.JsonpUtils;
 import co.elastic.clients.json.jackson.Jackson3JsonpMapper;
-import com.techtrend.essinkconsumerservice.document.TechTrendDocument;
+import com.techtrend.common.document.TechTrendDocument;
 import com.techtrendradar.avro.TechTrendAggregated;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.JsonNode;

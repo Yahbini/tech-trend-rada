@@ -2,7 +2,7 @@ package com.techtrend.essinkconsumerservice.consumer;
 
 import co.elastic.clients.json.JsonpMapper;
 import co.elastic.clients.json.JsonpUtils;
-import com.techtrend.essinkconsumerservice.document.TechTrendDocument;
+import com.techtrend.common.document.TechTrendDocument;
 import com.techtrend.essinkconsumerservice.mapper.TechTrendDocumentMapper;
 import com.techtrend.essinkconsumerservice.service.TechTrendDocumentService;
 import com.techtrend.essinkconsumerservice.service.TechTrendIndexService;

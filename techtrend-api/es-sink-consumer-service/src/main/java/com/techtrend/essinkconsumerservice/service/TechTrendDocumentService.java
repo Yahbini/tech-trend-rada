@@ -1,6 +1,6 @@
 package com.techtrend.essinkconsumerservice.service;
 
-import com.techtrend.essinkconsumerservice.document.TechTrendDocument;
+import com.techtrend.common.document.TechTrendDocument;
 import com.techtrend.essinkconsumerservice.dto.TechnologyLookup;
 import com.techtrend.essinkconsumerservice.mapper.TechTrendDocumentMapper;
 import com.techtrend.essinkconsumerservice.repository.TechnologyRepository;

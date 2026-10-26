@@ -1,0 +1,22 @@
+server:
+  port: 18082
+
+spring:
+  application:
+    name: api-gateway-service
+  config:
+    import: optional:file:../../infra/docker/.env[.properties]
+
+  elasticsearch:
+    uris: ${ES_URIS:http://localhost:19200}
+    connection-timeout: 1s
+    socket-timeout: 30s
+
+logging:
+  level:
+    com.techtrend.apigateway.service: DEBUG
+
+app:
+  elasticsearch:
+    index: tech-trend-aggregated
+

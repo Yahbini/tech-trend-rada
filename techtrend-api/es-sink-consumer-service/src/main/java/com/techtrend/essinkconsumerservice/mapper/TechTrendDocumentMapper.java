@@ -1,6 +1,6 @@
 package com.techtrend.essinkconsumerservice.mapper;
 
-import com.techtrend.essinkconsumerservice.document.TechTrendDocument;
+import com.techtrend.common.document.TechTrendDocument;
 import com.techtrendradar.avro.TechTrendAggregated;
 import org.springframework.stereotype.Component;
 

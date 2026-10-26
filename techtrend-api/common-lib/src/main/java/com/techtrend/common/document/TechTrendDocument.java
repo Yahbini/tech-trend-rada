@@ -1,9 +1,12 @@
-package com.techtrend.essinkconsumerservice.document;
+package com.techtrend.common.document;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Map;
@@ -12,11 +15,14 @@ import java.util.Map;
  * One document of index tech-trend-aggregated (1 technology × 1 closed 1h window); fields must match the strict mapping.
  */
 @Getter
+@Setter
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class TechTrendDocument {
   @JsonProperty("technology_id")
-  long technologyId;
+  Long technologyId;
 
   @JsonProperty("canonical_name")
   String canonicalName;
@@ -35,10 +41,11 @@ public class TechTrendDocument {
   String windowEnd;
 
   @JsonProperty("mention_count")
-  long mentionCount;
+  Long mentionCount;
 
   @JsonProperty("mention_velocity")
-  double mentionVelocity;
+  Double mentionVelocity;
+
 
   @JsonProperty("source_counts")
   Map<String, Long> sourceCounts;

@@ -16,6 +16,7 @@
         <module>stream-processing-service</module>
         <module>telegram-bot-service</module>
         <module>es-sink-consumer-service</module>
+        <module>api-gateway-service</module>
     </modules>
 
     <repositories>
