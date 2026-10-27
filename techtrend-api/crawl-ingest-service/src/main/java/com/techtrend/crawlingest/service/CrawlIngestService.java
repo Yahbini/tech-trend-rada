@@ -26,6 +26,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -46,19 +47,40 @@ public class CrawlIngestService {
 
   /**
    * Entry point for one webhook payload: always logs raw, then stops at crawl_invalid_record
-   * (bad payload), unclassified_mention (no known technology) or a re-crawl already counted.
+   * (bad payload), unclassified_mention (no known technology), a re-crawl already counted,
+   * or an enrich failure (raw row left for replay).
    */
   public void ingest(CrawlWebhookRequest request) {
-    List<Long> countedIds = saveWithRetry(request);
+    // T1 commits on its own so the raw payload survives even if enrichment below fails for good.
+    Optional<RawCrawlLog> rawCrawlLog = transactionTemplate.execute(status -> saveRawLogAndValidate(request));
+    if (rawCrawlLog == null || rawCrawlLog.isEmpty()) {
+      return;
+    }
 
+    List<Long> countedIds;
+    try {
+      countedIds = enrichWithRetry(request, rawCrawlLog.get());
+    } catch (RuntimeException e) {
+      // Raw log is already committed: answer 200 so n8n does not resend, the row is left for replay.
+      log.error("Enrich failed, raw_crawl_log_id={} left for replay, external_id={}",
+            rawCrawlLog.get().getId(), request.getExternalId(), e);
+      return;
+    }
     // Publish after commit so a slow/down Kafka never holds a DB connection or rolls back the raw log.
     if (!countedIds.isEmpty()) {
       publishMention(request, countedIds);
     }
   }
 
-  // Ids of technologies counted by this payload; empty means nothing to publish.
-  private List<Long> saveRawLog(CrawlWebhookRequest request) {
+  /**
+   * T1: runs in its own transaction without retry, so the raw payload is kept even if enrich fails later.
+   * Empty result = invalid (crawl_invalid_record written), so enrich is skipped.
+   * - Validate required fields and format (crawled_at, url)
+   * - Check source is registered
+   * - Save raw_crawl_log (always, even when invalid)
+   * - Invalid: save crawl_invalid_record with all reasons
+   */
+  private Optional<RawCrawlLog> saveRawLogAndValidate(CrawlWebhookRequest request) {
     List<String> errors = new ArrayList<>(validator.validateRequiredFields(request));
     errors.addAll(validator.validateFormat(request));
 
@@ -84,9 +106,13 @@ public class CrawlIngestService {
       invalidRecord.setReason(String.join("; ", errors));
       crawlInvalidRecordRepository.save(invalidRecord);
       log.warn("Invalid crawl payload, raw_crawl_log_id={}, reasons={}", rawLog.getId(), errors);
-      return List.of();
+      return Optional.empty();
     }
+    return Optional.of(rawLog);
+  }
 
+  // T2: ids of technologies counted by this payload; empty means nothing to publish.
+  private List<Long> enrich(CrawlWebhookRequest request, RawCrawlLog rawLog) {
     List<String> technologies = techAliasMatcher.findCanonicalNames(request.getTitle());
     if (technologies.isEmpty()) {
       UnclassifiedMention unclassified = new UnclassifiedMention();
@@ -123,10 +149,10 @@ public class CrawlIngestService {
    * Concurrent webhooks can deadlock or race on inserting the same new technology (UNIQUE canonical_name);
    * the loser is rolled back and retried in a fresh transaction, where it sees the committed row.
    */
-  private List<Long> saveWithRetry(CrawlWebhookRequest request) {
+  private List<Long> enrichWithRetry(CrawlWebhookRequest request, RawCrawlLog rawLog) {
     for (int attempt = 1; ; attempt++) {
       try {
-        List<Long> countedIds = transactionTemplate.execute(status -> saveRawLog(request));
+        List<Long> countedIds = transactionTemplate.execute(status -> enrich(request, rawLog));
         return countedIds != null ? countedIds : List.of();
       } catch (PessimisticLockingFailureException | DataIntegrityViolationException e) {
         if (attempt >= MAX_SAVE_ATTEMPTS) {

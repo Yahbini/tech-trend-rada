@@ -31,3 +31,9 @@ spring:
       properties:
         schema.registry.url: ${SCHEMA_REGISTRY_URL:http://localhost:18081}
         auto.register.schemas: true
+
+app:
+  stats-job:
+#    cron: "0 5 0 * * *"        # sec min hour day month weekday — 00:05 every day
+    cron: "0 * * * * *"
+    zone: Asia/Ho_Chi_Minh

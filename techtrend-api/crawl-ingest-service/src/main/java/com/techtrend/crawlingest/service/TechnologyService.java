@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -107,8 +108,42 @@ public class TechnologyService {
     int last7d = technology.getMentionCountLast7d();
     technology.setMentionCountPrev7d(prev7d);
     //    velocity = (last_7d - prev_7d) / max(prev_7d, 1)
-    technology.setMentionVelocity(BigDecimal.valueOf(last7d - prev7d)
-                                            .divide(BigDecimal.valueOf(Math.max(prev7d, 1)), 4, RoundingMode.HALF_UP));
+    technology.setMentionVelocity(velocityOf(last7d, prev7d));
+  }
+
+  /**
+   * Daily job: recounts the 7-day stats from technology_mention, so technologies no longer mentioned decay to 0.
+   * Unlike the hot path there is no "+1": no new mention is being saved here.
+   * Unchanged stats are left untouched, so the row gets no UPDATE and tech-updates gets no extra CDC event.
+   *
+   * @return true if the row changed and will be UPDATEd on commit
+   */
+  public boolean recalculateSevenDayStats(Technology technology, Instant now) {
+    Instant weekAgo = now.minus(7, ChronoUnit.DAYS);
+    int last7d = technologyMentionRepository.countInWindow(technology.getId(), weekAgo, now).intValue();
+    int prev7d = technologyMentionRepository
+          .countInWindow(technology.getId(), now.minus(14, ChronoUnit.DAYS), weekAgo)
+          .intValue();
+    BigDecimal velocity = velocityOf(last7d, prev7d);
+
+    // compareTo, not equals: BigDecimal 1.0 vs 1.0000 are equal in value but not in equals().
+    boolean unchanged = Objects.equals(technology.getMentionCountLast7d(), last7d)
+          && Objects.equals(technology.getMentionCountPrev7d(), prev7d)
+          && technology.getMentionVelocity() != null
+          && technology.getMentionVelocity().compareTo(velocity) == 0;
+    if (unchanged) {
+      return false;
+    }
+    technology.setMentionCountLast7d(last7d);
+    technology.setMentionCountPrev7d(prev7d);
+    technology.setMentionVelocity(velocity);
+    return true;
+  }
+
+  // velocity = (last_7d - prev_7d) / max(prev_7d, 1); shared by hot path and daily job.
+  private BigDecimal velocityOf(int last7d, int prev7d) {
+    return BigDecimal.valueOf(last7d - prev7d)
+                     .divide(BigDecimal.valueOf(Math.max(prev7d, 1)), 4, RoundingMode.HALF_UP);
   }
 
   /**
