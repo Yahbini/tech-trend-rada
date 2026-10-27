@@ -3,6 +3,7 @@ package com.techtrend.apigateway.controller;
 import com.techtrend.apigateway.dto.request.TopTechnologiesRequest;
 import com.techtrend.apigateway.dto.response.TopTechnologyResponse;
 import com.techtrend.apigateway.service.TopTechnologyService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,7 +19,7 @@ public class TopTechnologyController {
   TopTechnologyService topTechnologyService;
 
   @GetMapping("/top")
-  public List<TopTechnologyResponse> findTopTechnologies(TopTechnologiesRequest request) {
+  public List<TopTechnologyResponse> findTopTechnologies(@Valid TopTechnologiesRequest request) {
     return topTechnologyService.findTop(request);
   }
 }

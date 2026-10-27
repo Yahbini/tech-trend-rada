@@ -1,5 +1,6 @@
 package com.techtrend.apigateway.dto.request;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,8 @@ import java.time.Instant;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TopTechnologiesRequest {
+  @Pattern(regexp = "language|database|framework|ai-tool|devops|cloud|messaging|testing|tool|other",
+        message = "category must be one of: language, database, framework, ai-tool, devops, cloud, messaging, testing, tool, other")
   String category;
   Instant window;
   Integer limit = 10;

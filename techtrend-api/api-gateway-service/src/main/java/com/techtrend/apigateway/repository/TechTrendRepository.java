@@ -49,6 +49,32 @@ public class TechTrendRepository {
   }
 
   /**
+   * One document per technology whose canonical_name contains query: its latest window (or windowStart when given),
+   * newest first then hottest; size counts technologies, not windows.
+   */
+  public List<TechTrendDocument> searchByName(String query, String windowStart, int size) {
+    try {
+      SearchResponse<TechTrendDocument> response = elasticsearchClient.search(s ->
+            s.index(esIndexProperties.getIndex())
+             .query(q -> q.bool(b -> {
+               b.filter(nameMatch(query));
+               if (windowStart != null) b.filter(f ->
+                     f.term(t -> t.field("window_start").value(windowStart)));
+               return b;
+             }))
+             .sort(o -> o.field(f -> f.field("window_start").order(SortOrder.Desc)))
+             .sort(o -> o.field(f -> f.field("mention_count").order(SortOrder.Desc)))
+             .sort(o -> o.field(f -> f.field("technology_id").order(SortOrder.Asc)))
+             .collapse(c -> c.field("technology_id"))
+             .size(size), TechTrendDocument.class
+      );
+      return response.hits().hits().stream().map(Hit::source).toList();
+    } catch (IOException e) {
+      throw new UncheckedIOException("Search by name failed: query=" + query + " window=" + windowStart, e);
+    }
+  }
+
+  /**
    * Documents of one window ranked desc by the sort field; technology_id breaks remaining ties so ranks are stable.
    */
   public List<TechTrendDocument> findTop(String windowStart, String category, TopSortField sortBy, int limit) {
@@ -67,6 +93,22 @@ public class TechTrendRepository {
     } catch (IOException e) {
       throw new UncheckedIOException("Find top failed: window=" + windowStart + " category=" + category, e);
     }
+  }
+
+  private Query nameMatch(String query) {
+    String pattern = "*" + escapeWildcard(query) + "*";
+    return Query.of(q -> q.wildcard(w -> w.field("canonical_name")
+                                          .value(pattern)
+                                          .caseInsensitive(true)));
+  }
+
+  // Treat \ * ? in q as literal chars, not wildcard syntax. Escape \ first so the \ added for * ? aren't doubled.
+  //   rea  -> rea    (normal text unchanged)
+  //   ?    -> \?     (else *?* matches every name)
+  //   c*   -> c\*    (else *c** matches every name containing "c")
+  //   abc\ -> abc\\  (else the trailing \ escapes the closing *)
+  private String escapeWildcard(String text) {
+    return text.replace("\\", "\\\\").replace("*", "\\*").replace("?", "\\?");
   }
 
   private Query categoryFilter(String category) {

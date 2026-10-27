@@ -2,7 +2,7 @@ package com.techtrend.apigateway.service;
 
 import com.techtrend.apigateway.dto.request.TopTechnologiesRequest;
 import com.techtrend.apigateway.dto.response.TopTechnologyResponse;
-import com.techtrend.apigateway.mapper.TopTechnologyMapper;
+import com.techtrend.apigateway.mapper.TechnologyMapper;
 import com.techtrend.apigateway.repository.TechTrendRepository;
 import com.techtrend.common.document.TechTrendDocument;
 import lombok.AccessLevel;
@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TopTechnologyService {
   TechTrendRepository techTrendRepository;
-  private final TopTechnologyMapper topTechnologyMapper;
+  TechnologyMapper technologyMapper;
 
   /**
    * Top technologies of one 1h window, ranked by ES at query time (latest window when request.window is null).
@@ -42,7 +42,7 @@ public class TopTechnologyService {
 
     // Mapping documents to response
     return IntStream.range(0, documents.size())
-                    .mapToObj(i -> topTechnologyMapper.toResponse(documents.get(i), i + 1))
+                    .mapToObj(i -> technologyMapper.toTopResponse(documents.get(i), i + 1))
                     .toList();
   }
 }
