@@ -17,6 +17,8 @@
         <module>telegram-bot-service</module>
         <module>es-sink-consumer-service</module>
         <module>api-gateway-service</module>
+        <module>scoring-grpc-api</module>
+        <module>trend-scoring-service</module>
     </modules>
 
     <repositories>

@@ -3,3 +3,9 @@
 ai-docs/
 /techtrend-api/ai-docs/
 /techtrend-api/.claude/
+
+# Build output and IDE/log files (all modules)
+target/
+*.iml
+*.log
+mention-log.txt
