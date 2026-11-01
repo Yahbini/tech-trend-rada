@@ -1,0 +1,32 @@
+{
+  "name": "mysql-technology-cdc",
+  "config": {
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "tasks.max": "1",
+
+    "database.hostname": "mysql",
+    "database.port": "3306",
+    "database.user": "${env:DEBEZIUM_MYSQL_USER}",
+    "database.password": "${env:DEBEZIUM_MYSQL_PASSWORD}",
+    "database.server.id": "184054",
+
+    "topic.prefix": "ttr",
+    "database.include.list": "tech_trend_radar",
+    "table.include.list": "tech_trend_radar.technology",
+
+    "topic.creation.default.replication.factor": "1",
+    "topic.creation.default.partitions": "1",
+    "topic.creation.default.cleanup.policy": "compact",
+
+    "schema.history.internal.kafka.bootstrap.servers": "kafka:29092",
+    "schema.history.internal.kafka.topic": "ttr.schema-history",
+    "include.schema.changes": "false",
+    "transforms": "unwrap,route",
+    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+    "transforms.unwrap.add.fields": "op,source.ts_ms",
+    "transforms.unwrap.delete.tombstone.handling.mode": "tombstone",
+    "transforms.route.type": "org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.route.regex": "ttr\\.tech_trend_radar\\.technology",
+    "transforms.route.replacement": "tech-updates"
+  }
+}

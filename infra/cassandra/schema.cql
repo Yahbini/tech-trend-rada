@@ -13,3 +13,16 @@ CREATE TABLE IF NOT EXISTS tech_mentions_by_source (
    crawled_at timestamp,
    PRIMARY KEY ((source), time_bucket, mention_id)
 ) WITH CLUSTERING ORDER BY (time_bucket DESC, mention_id DESC);
+
+-- Mention history per technology; month bucket (yyyy-MM UTC) keeps partitions bounded.
+-- Natural clustering key: replaying a message overwrites the same row instead of duplicating it.
+CREATE TABLE IF NOT EXISTS tech_mentions_by_tech (
+                                                     technology_id bigint,
+                                                     month text,
+                                                     crawled_at timestamp,
+                                                     source text,
+                                                     external_id text,
+                                                     url text,
+                                                     raw_text text,
+                                                     PRIMARY KEY ((technology_id, month), crawled_at, source, external_id)
+) WITH CLUSTERING ORDER BY (crawled_at DESC, source ASC, external_id ASC);

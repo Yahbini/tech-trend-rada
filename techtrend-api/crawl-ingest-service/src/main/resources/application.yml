@@ -1,18 +1,24 @@
+server:
+  port: 18080
+
 spring:
   application:
     name: techtrend-api
+  config:
+    import: optional:file:../../infra/docker/.env[.properties]
 
   datasource:
-    url: jdbc:mysql://localhost:13306/tech_trend_radar?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh
-    username: ttr-user
-    password: Admin@123
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:13306}/${MYSQL_DATABASE:tech_trend_radar}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: validate
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        jdbc.time_zone: UTC
+        type.preferred_instant_jdbc_type: TIMESTAMP
   flyway:
     enabled: true
     locations: classpath:db/migration
@@ -25,3 +31,8 @@ spring:
       properties:
         schema.registry.url: ${SCHEMA_REGISTRY_URL:http://localhost:18081}
         auto.register.schemas: true
+
+app:
+  stats-job:
+    cron: "0 5 0 * * *"        # sec min hour day month weekday — 00:05 every day
+    zone: Asia/Ho_Chi_Minh

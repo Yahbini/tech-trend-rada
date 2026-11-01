@@ -13,6 +13,10 @@
         <module>crawl-ingest-service</module>
         <module>common-lib</module>
         <module>mention-consumer-service</module>
+        <module>stream-processing-service</module>
+        <module>telegram-bot-service</module>
+        <module>es-sink-consumer-service</module>
+        <module>api-gateway-service</module>
     </modules>
 
     <repositories>

@@ -2,7 +2,7 @@ package com.techtrend.mentionconsumer.repository;
 
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.PreparedStatement;
-import com.techtrend.mentionconsumer.mapper.MentionRow;
+import com.techtrend.mentionconsumer.record.MentionRow;
 import org.springframework.stereotype.Repository;
 
 

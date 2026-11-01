@@ -1,0 +1,16 @@
+{
+  "type": "record",
+  "name": "MentionWindowStats",
+  "namespace": "com.techtrendradar.avro",
+  "doc": "Internal state of the hourly mention-count window store, not a topic contract.",
+  "fields": [
+    {
+      "name": "mention_count", "type": "long", "default": 0
+    },
+    {
+      "name": "source_counts",
+      "type": {"type": "map", "values": "long", "avro.java.string": "String", "java-key-class": "java.lang.String"},
+      "default": {}
+    }
+  ]
+}

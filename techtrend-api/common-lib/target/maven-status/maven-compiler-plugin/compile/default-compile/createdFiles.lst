@@ -1,2 +1,10 @@
 com/techtrendradar/avro/TechMention.class
+com/techtrendradar/avro/NewTechDetected$Builder.class
 com/techtrendradar/avro/TechMention$Builder.class
+com/techtrend/common/document/TechTrendDocument.class
+com/techtrendradar/avro/NewTechDetected.class
+com/techtrendradar/avro/TechTrendAggregated$Builder.class
+com/techtrendradar/avro/TechTrendAggregated.class
+com/techtrend/common/document/TechTrendDocument$TechTrendDocumentBuilder.class
+com/techtrendradar/avro/MentionWindowStats$Builder.class
+com/techtrendradar/avro/MentionWindowStats.class

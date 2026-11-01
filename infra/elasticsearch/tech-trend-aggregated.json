@@ -1,0 +1,49 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0
+  },
+  "mappings": {
+    "dynamic": "strict",
+    "dynamic_templates": [
+      {
+        "source_counts_as_long": {
+          "path_match": "source_counts.*",
+          "mapping": {
+            "type": "long"
+          }
+        }
+      }
+    ],
+    "properties": {
+      "technology_id": {
+        "type": "long"
+      },
+      "canonical_name": {
+        "type": "keyword"
+      },
+      "category_id": {
+        "type": "long"
+      },
+      "category": {
+        "type": "keyword"
+      },
+      "window_start": {
+        "type": "date"
+      },
+      "window_end": {
+        "type": "date"
+      },
+      "mention_count": {
+        "type": "long"
+      },
+      "mention_velocity": {
+        "type": "double"
+      },
+      "source_counts": {
+        "type": "object",
+        "dynamic": true
+      }
+    }
+  }
+}
