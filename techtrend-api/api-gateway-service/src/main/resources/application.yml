@@ -12,6 +12,13 @@ spring:
     connection-timeout: 1s
     socket-timeout: 30s
 
+  grpc:
+    client:
+      channel:
+        scoring:
+          target: ${SCORING_GRPC_TARGET:localhost:9090}
+
+
 logging:
   level:
     com.techtrend.apigateway.service: DEBUG

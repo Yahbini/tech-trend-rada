@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package techtrend.scoring;
+
+option java_package = "com.techtrendradar.grpc.scoring";
+option java_multiple_files = true;
+
+service TrendScoringService {
+  rpc GetScore(TechRequest) returns (ScoreResponse);
+  rpc GetScores(TechsRequest) returns (ScoresResponse);
+  // Sorted by score desc; empty category = all, limit 0 = default 10.
+  rpc GetTopScores(TopScoresRequest) returns (ScoresResponse);
+}
+
+message TechRequest {
+  int64 technology_id = 1;
+}
+
+message TechsRequest {
+  repeated int64 technology_ids = 1;
+}
+
+message TopScoresRequest {
+  string category = 1;
+  int32 limit = 2;
+}
+
+message ScoreResponse {
+  int64 technology_id = 1;
+  string canonical_name = 2;
+  string category = 3;
+  double score = 4;
+  double mention_velocity = 5;
+  int64 source_count = 6;
+  double category_weight = 7;
+}
+
+message ScoresResponse {
+  repeated ScoreResponse scores = 1;
+}

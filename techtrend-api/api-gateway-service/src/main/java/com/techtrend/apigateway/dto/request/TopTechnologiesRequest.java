@@ -17,8 +17,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TopTechnologiesRequest {
-  @Pattern(regexp = "language|database|framework|ai-tool|devops|cloud|messaging|testing|tool|other",
-        message = "category must be one of: language, database, framework, ai-tool, devops, cloud, messaging, testing, tool, other")
+  @Pattern(regexp = CategoryCodes.PATTERN, message = CategoryCodes.MESSAGE)
   String category;
   Instant window;
   Integer limit = 10;
