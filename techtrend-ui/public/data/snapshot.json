@@ -1,0 +1,571 @@
+{
+  "exportedAt": "2026-11-01T09:30:45.724Z",
+  "items": [
+    {
+      "canonicalName": "Angular",
+      "category": "framework",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 3,
+      "rank": 1,
+      "score": 0.98,
+      "sourceCount": 2,
+      "technologyId": 54
+    },
+    {
+      "canonicalName": "React",
+      "category": "framework",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 2,
+      "rank": 2,
+      "score": 0.855,
+      "sourceCount": 2,
+      "technologyId": 49
+    },
+    {
+      "canonicalName": "Gemma",
+      "category": "ai-tool",
+      "categoryWeight": 1,
+      "mentionVelocity": 3,
+      "rank": 3,
+      "score": 0.85,
+      "sourceCount": 1,
+      "technologyId": 11
+    },
+    {
+      "canonicalName": "GitHub",
+      "category": "tool",
+      "categoryWeight": 0.6,
+      "mentionVelocity": 2,
+      "rank": 4,
+      "score": 0.795,
+      "sourceCount": 2,
+      "technologyId": 16
+    },
+    {
+      "canonicalName": "Apache Airflow",
+      "category": "tool",
+      "categoryWeight": 0.6,
+      "mentionVelocity": 3,
+      "rank": 5,
+      "score": 0.77,
+      "sourceCount": 1,
+      "technologyId": 50
+    },
+    {
+      "canonicalName": "Rust",
+      "category": "language",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 1,
+      "rank": 6,
+      "score": 0.73,
+      "sourceCount": 2,
+      "technologyId": 13
+    },
+    {
+      "canonicalName": "DeepSeek",
+      "category": "ai-tool",
+      "categoryWeight": 1,
+      "mentionVelocity": 2,
+      "rank": 7,
+      "score": 0.725,
+      "sourceCount": 1,
+      "technologyId": 44
+    },
+    {
+      "canonicalName": "Python",
+      "category": "language",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 2,
+      "rank": 8,
+      "score": 0.705,
+      "sourceCount": 1,
+      "technologyId": 32
+    },
+    {
+      "canonicalName": "JavaScript",
+      "category": "language",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 2,
+      "rank": 9,
+      "score": 0.705,
+      "sourceCount": 1,
+      "technologyId": 35
+    },
+    {
+      "canonicalName": "Apache Flink",
+      "category": "framework",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 2,
+      "rank": 10,
+      "score": 0.705,
+      "sourceCount": 1,
+      "technologyId": 59
+    },
+    {
+      "canonicalName": "Ansible",
+      "category": "devops",
+      "categoryWeight": 0.7,
+      "mentionVelocity": 2,
+      "rank": 11,
+      "score": 0.665,
+      "sourceCount": 1,
+      "technologyId": 57
+    },
+    {
+      "canonicalName": "Kafka",
+      "category": "messaging",
+      "categoryWeight": 0.7,
+      "mentionVelocity": 3,
+      "rank": 12,
+      "score": 0.64,
+      "sourceCount": 0,
+      "technologyId": 1
+    },
+    {
+      "canonicalName": "Claude",
+      "category": "ai-tool",
+      "categoryWeight": 1,
+      "mentionVelocity": 0,
+      "rank": 13,
+      "score": 0.625,
+      "sourceCount": 2,
+      "technologyId": 8
+    },
+    {
+      "canonicalName": "ChatGPT",
+      "category": "ai-tool",
+      "categoryWeight": 1,
+      "mentionVelocity": 1,
+      "rank": 14,
+      "score": 0.6,
+      "sourceCount": 1,
+      "technologyId": 15
+    },
+    {
+      "canonicalName": "Go",
+      "category": "language",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 1,
+      "rank": 15,
+      "score": 0.58,
+      "sourceCount": 1,
+      "technologyId": 3
+    },
+    {
+      "canonicalName": "Java",
+      "category": "language",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 1,
+      "rank": 16,
+      "score": 0.58,
+      "sourceCount": 1,
+      "technologyId": 31
+    },
+    {
+      "canonicalName": "Tailwind CSS",
+      "category": "framework",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 1,
+      "rank": 17,
+      "score": 0.58,
+      "sourceCount": 1,
+      "technologyId": 60
+    },
+    {
+      "canonicalName": "SQLite",
+      "category": "database",
+      "categoryWeight": 0.85,
+      "mentionVelocity": 1,
+      "rank": 18,
+      "score": 0.57,
+      "sourceCount": 1,
+      "technologyId": 61
+    },
+    {
+      "canonicalName": "Kubernetes",
+      "category": "devops",
+      "categoryWeight": 0.7,
+      "mentionVelocity": 1,
+      "rank": 19,
+      "score": 0.54,
+      "sourceCount": 1,
+      "technologyId": 2
+    },
+    {
+      "canonicalName": "AWS",
+      "category": "cloud",
+      "categoryWeight": 0.7,
+      "mentionVelocity": 1,
+      "rank": 20,
+      "score": 0.54,
+      "sourceCount": 1,
+      "technologyId": 21
+    },
+    {
+      "canonicalName": "Git",
+      "category": "tool",
+      "categoryWeight": 0.6,
+      "mentionVelocity": 1,
+      "rank": 21,
+      "score": 0.52,
+      "sourceCount": 1,
+      "technologyId": 23
+    },
+    {
+      "canonicalName": "OpenAI",
+      "category": "ai-tool",
+      "categoryWeight": 1,
+      "mentionVelocity": 1,
+      "rank": 22,
+      "score": 0.45,
+      "sourceCount": 0,
+      "technologyId": 7
+    },
+    {
+      "canonicalName": "Three.js",
+      "category": "framework",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 1,
+      "rank": 23,
+      "score": 0.43,
+      "sourceCount": 0,
+      "technologyId": 17
+    },
+    {
+      "canonicalName": "PHP",
+      "category": "language",
+      "categoryWeight": 0.9,
+      "mentionVelocity": -0.5,
+      "rank": 24,
+      "score": 0.393,
+      "sourceCount": 1,
+      "technologyId": 36
+    },
+    {
+      "canonicalName": "TypeScript",
+      "category": "language",
+      "categoryWeight": 0.9,
+      "mentionVelocity": -0.5,
+      "rank": 25,
+      "score": 0.393,
+      "sourceCount": 1,
+      "technologyId": 46
+    },
+    {
+      "canonicalName": "RabbitMQ",
+      "category": "messaging",
+      "categoryWeight": 0.7,
+      "mentionVelocity": 1,
+      "rank": 26,
+      "score": 0.39,
+      "sourceCount": 0,
+      "technologyId": 48
+    },
+    {
+      "canonicalName": "iOS",
+      "category": "other",
+      "categoryWeight": 0.5,
+      "mentionVelocity": 1,
+      "rank": 27,
+      "score": 0.35,
+      "sourceCount": 0,
+      "technologyId": 18
+    },
+    {
+      "canonicalName": "Anthropic",
+      "category": "ai-tool",
+      "categoryWeight": 1,
+      "mentionVelocity": 0,
+      "rank": 28,
+      "score": 0.325,
+      "sourceCount": 0,
+      "technologyId": 5
+    },
+    {
+      "canonicalName": "Gemini",
+      "category": "ai-tool",
+      "categoryWeight": 1,
+      "mentionVelocity": 0,
+      "rank": 29,
+      "score": 0.325,
+      "sourceCount": 0,
+      "technologyId": 14
+    },
+    {
+      "canonicalName": "OpenRouter",
+      "category": "ai-tool",
+      "categoryWeight": 1,
+      "mentionVelocity": 0,
+      "rank": 30,
+      "score": 0.325,
+      "sourceCount": 0,
+      "technologyId": 24
+    },
+    {
+      "canonicalName": "GPT",
+      "category": "ai-tool",
+      "categoryWeight": 1,
+      "mentionVelocity": 0,
+      "rank": 31,
+      "score": 0.325,
+      "sourceCount": 0,
+      "technologyId": 28
+    },
+    {
+      "canonicalName": "Zig",
+      "category": "language",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 0,
+      "rank": 32,
+      "score": 0.305,
+      "sourceCount": 0,
+      "technologyId": 4
+    },
+    {
+      "canonicalName": "Fortran",
+      "category": "language",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 0,
+      "rank": 33,
+      "score": 0.305,
+      "sourceCount": 0,
+      "technologyId": 6
+    },
+    {
+      "canonicalName": "Svelte",
+      "category": "framework",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 0,
+      "rank": 34,
+      "score": 0.305,
+      "sourceCount": 0,
+      "technologyId": 19
+    },
+    {
+      "canonicalName": "Flutter",
+      "category": "framework",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 0,
+      "rank": 35,
+      "score": 0.305,
+      "sourceCount": 0,
+      "technologyId": 20
+    },
+    {
+      "canonicalName": "SvelteKit",
+      "category": "framework",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 0,
+      "rank": 36,
+      "score": 0.305,
+      "sourceCount": 0,
+      "technologyId": 25
+    },
+    {
+      "canonicalName": "Objective-C",
+      "category": "language",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 0,
+      "rank": 37,
+      "score": 0.305,
+      "sourceCount": 0,
+      "technologyId": 29
+    },
+    {
+      "canonicalName": "C++",
+      "category": "language",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 0,
+      "rank": 38,
+      "score": 0.305,
+      "sourceCount": 0,
+      "technologyId": 30
+    },
+    {
+      "canonicalName": "C#",
+      "category": "language",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 0,
+      "rank": 39,
+      "score": 0.305,
+      "sourceCount": 0,
+      "technologyId": 33
+    },
+    {
+      "canonicalName": "COBOL",
+      "category": "language",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 0,
+      "rank": 40,
+      "score": 0.305,
+      "sourceCount": 0,
+      "technologyId": 34
+    },
+    {
+      "canonicalName": "Swift",
+      "category": "language",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 0,
+      "rank": 41,
+      "score": 0.305,
+      "sourceCount": 0,
+      "technologyId": 37
+    },
+    {
+      "canonicalName": "Actix",
+      "category": "framework",
+      "categoryWeight": 0.9,
+      "mentionVelocity": 0,
+      "rank": 42,
+      "score": 0.305,
+      "sourceCount": 0,
+      "technologyId": 39
+    },
+    {
+      "canonicalName": "Redis",
+      "category": "database",
+      "categoryWeight": 0.85,
+      "mentionVelocity": 0,
+      "rank": 43,
+      "score": 0.295,
+      "sourceCount": 0,
+      "technologyId": 27
+    },
+    {
+      "canonicalName": "DuckDB",
+      "category": "database",
+      "categoryWeight": 0.85,
+      "mentionVelocity": 0,
+      "rank": 44,
+      "score": 0.295,
+      "sourceCount": 0,
+      "technologyId": 45
+    },
+    {
+      "canonicalName": "Android",
+      "category": "other",
+      "categoryWeight": 0.5,
+      "mentionVelocity": -0.667,
+      "rank": 45,
+      "score": 0.292,
+      "sourceCount": 1,
+      "technologyId": 26
+    },
+    {
+      "canonicalName": "ActiveMQ",
+      "category": "messaging",
+      "categoryWeight": 0.7,
+      "mentionVelocity": 0,
+      "rank": 46,
+      "score": 0.265,
+      "sourceCount": 0,
+      "technologyId": 47
+    },
+    {
+      "canonicalName": "Docker",
+      "category": "devops",
+      "categoryWeight": 0.7,
+      "mentionVelocity": -1,
+      "rank": 47,
+      "score": 0.14,
+      "sourceCount": 0,
+      "technologyId": 38
+    }
+  ],
+  "hourly": {
+    "windowStart": "2026-11-01T08:00:00Z",
+    "items": [
+      {
+        "canonicalName": "Go",
+        "category": "language",
+        "mentionCount": 1,
+        "mentionVelocity": 1,
+        "rank": 1,
+        "technologyId": 3,
+        "windowStart": "2026-11-01T08:00:00Z"
+      }
+    ]
+  },
+  "lastActive": {
+    "1": {
+      "canonicalName": "Kafka",
+      "category": "messaging",
+      "mentionCount": 1,
+      "mentionVelocity": 0,
+      "technologyId": 1,
+      "windowStart": "2026-10-21T10:00:00Z"
+    },
+    "2": {
+      "canonicalName": "Kubernetes",
+      "category": "devops",
+      "mentionCount": 1,
+      "mentionVelocity": 1,
+      "technologyId": 2,
+      "windowStart": "2026-10-27T11:00:00Z"
+    },
+    "3": {
+      "canonicalName": "Go",
+      "category": "language",
+      "mentionCount": 1,
+      "mentionVelocity": 1,
+      "technologyId": 3,
+      "windowStart": "2026-11-01T08:00:00Z"
+    },
+    "38": {
+      "canonicalName": "Docker",
+      "category": "devops",
+      "mentionCount": 1,
+      "mentionVelocity": 1,
+      "technologyId": 38,
+      "windowStart": "2026-10-19T11:00:00Z"
+    },
+    "47": {
+      "canonicalName": "ActiveMQ",
+      "category": "messaging",
+      "mentionCount": 1,
+      "mentionVelocity": 1,
+      "technologyId": 47,
+      "windowStart": "2026-10-19T10:00:00Z"
+    },
+    "49": {
+      "canonicalName": "React",
+      "category": "framework",
+      "mentionCount": 1,
+      "mentionVelocity": 1,
+      "technologyId": 49,
+      "windowStart": "2026-10-27T11:00:00Z"
+    },
+    "50": {
+      "canonicalName": "Apache Airflow",
+      "category": "tool",
+      "mentionCount": 3,
+      "mentionVelocity": 3,
+      "technologyId": 50,
+      "windowStart": "2026-10-27T11:00:00Z"
+    },
+    "54": {
+      "canonicalName": "Angular",
+      "category": "framework",
+      "mentionCount": 2,
+      "mentionVelocity": 2,
+      "technologyId": 54,
+      "windowStart": "2026-10-27T11:00:00Z"
+    },
+    "57": {
+      "canonicalName": "Ansible",
+      "category": "devops",
+      "mentionCount": 2,
+      "mentionVelocity": 2,
+      "technologyId": 57,
+      "windowStart": "2026-10-27T11:00:00Z"
+    },
+    "59": {
+      "canonicalName": "Apache Flink",
+      "category": "framework",
+      "mentionCount": 2,
+      "mentionVelocity": 2,
+      "technologyId": 59,
+      "windowStart": "2026-10-27T11:00:00Z"
+    }
+  }
+}

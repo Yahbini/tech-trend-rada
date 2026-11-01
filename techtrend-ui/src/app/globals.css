@@ -1,0 +1,13 @@
+:root {
+  --page-bg: #f5f7fa;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page-bg: #0f1115;
+  }
+}
+html,
+body {
+  margin: 0;
+  background: var(--page-bg);
+}
