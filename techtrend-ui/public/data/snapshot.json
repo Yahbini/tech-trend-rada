@@ -1,5 +1,5 @@
 {
-  "exportedAt": "2026-11-01T07:44:36.651Z",
+  "exportedAt": "2026-11-01T07:56:09.787Z",
   "items": [
     {
       "canonicalName": "Apache Airflow",
@@ -451,5 +451,37 @@
       "sourceCount": 0,
       "technologyId": 38
     }
-  ]
+  ],
+  "hourly": {
+    "windowStart": "2026-10-19T11:00:00Z",
+    "items": [
+      {
+        "canonicalName": "Docker",
+        "category": "devops",
+        "mentionCount": 1,
+        "mentionVelocity": 1,
+        "rank": 1,
+        "technologyId": 38,
+        "windowStart": "2026-10-19T11:00:00Z"
+      }
+    ]
+  },
+  "lastActive": {
+    "38": {
+      "canonicalName": "Docker",
+      "category": "devops",
+      "mentionCount": 1,
+      "mentionVelocity": 1,
+      "technologyId": 38,
+      "windowStart": "2026-10-19T11:00:00Z"
+    },
+    "47": {
+      "canonicalName": "ActiveMQ",
+      "category": "messaging",
+      "mentionCount": 1,
+      "mentionVelocity": 1,
+      "technologyId": 47,
+      "windowStart": "2026-10-19T10:00:00Z"
+    }
+  }
 }

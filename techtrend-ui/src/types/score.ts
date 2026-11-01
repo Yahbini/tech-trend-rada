@@ -10,7 +10,30 @@ export interface TopScore {
   rank: number;
 }
 
-export interface TopSnapshot {
+/** One item of GET /top/hourly (TopTechnologyResponse): mentions inside one 1h window. */
+export interface HourlyTrend {
+  technologyId: number;
+  canonicalName: string;
+  category: string | null;
+  windowStart: string;
+  mentionCount: number;
+  mentionVelocity: number;
+  rank: number;
+}
+
+/** One item of GET /search (SearchTechnologyResponse): the technology's own latest 1h window. */
+export interface LastActive {
+  technologyId: number;
+  canonicalName: string;
+  category: string | null;
+  windowStart: string;
+  mentionCount: number;
+  mentionVelocity: number;
+}
+
+export interface TrendSnapshot {
   exportedAt: string;
   items: TopScore[];
+  hourly: { windowStart: string | null; items: HourlyTrend[] };
+  lastActive: Record<string, LastActive>;
 }

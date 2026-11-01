@@ -1,29 +1,19 @@
 "use client";
 
-import { Card, Col, Input, Row, Segmented, Space, Statistic, Table, Tag, Typography } from "antd";
+import { Card, Col, Input, Row, Segmented, Space, Statistic, Table, Tabs, Tag, Typography } from "antd";
 import type { TableColumnsType } from "antd";
 import { useMemo, useState } from "react";
 import ScoreBreakdown from "@/components/ScoreBreakdown";
 import HowScoreWorks from "@/components/HowScoreWorks";
+import HourlyTable from "@/components/HourlyTable";
+import LastActivePanel from "@/components/LastActivePanel";
+import { CATEGORY_COLORS, formatGrowth } from "@/lib/format";
 import { scoreParts } from "@/lib/scoring";
-import type { TopScore, TopSnapshot } from "@/types/score";
+import type { TopScore, TrendSnapshot } from "@/types/score";
 
 const ALL = "all";
 
-const CATEGORY_COLORS: Record<string, string> = {
-  language: "geekblue",
-  database: "purple",
-  framework: "blue",
-  "ai-tool": "magenta",
-  devops: "cyan",
-  cloud: "green",
-  messaging: "orange",
-  testing: "lime",
-  tool: "gold",
-  other: "default",
-};
-
-export default function TrendingView({ snapshot }: { snapshot: TopSnapshot }) {
+export default function TrendingView({ snapshot }: { snapshot: TrendSnapshot }) {
   const [category, setCategory] = useState<string>(ALL);
   const [query, setQuery] = useState("");
 
@@ -75,8 +65,7 @@ export default function TrendingView({ snapshot }: { snapshot: TopSnapshot }) {
       responsive: ["md"],
       render: (v: number) => (
         <Typography.Text type={v > 0 ? "success" : v < 0 ? "danger" : "secondary"}>
-          {v > 0 ? "+" : ""}
-          {Math.round(v * 100)}%
+          {formatGrowth(v)}
         </Typography.Text>
       ),
     },
@@ -123,27 +112,47 @@ export default function TrendingView({ snapshot }: { snapshot: TopSnapshot }) {
         </Row>
 
         <Card>
-          <Space direction="vertical" size={16} style={{ width: "100%" }}>
-            <Space wrap style={{ justifyContent: "space-between", width: "100%" }}>
-              <div style={{ overflowX: "auto", maxWidth: "100%" }}>
-                <Segmented options={categories} value={category} onChange={(v) => setCategory(String(v))} />
-              </div>
-              <Input.Search
-                allowClear
-                placeholder="Search technology"
-                onChange={(e) => setQuery(e.target.value)}
-                style={{ width: 220 }}
-              />
-            </Space>
-            <Table<TopScore>
-              rowKey="technologyId"
-              columns={columns}
-              dataSource={rows}
-              size="middle"
-              pagination={{ pageSize: 15, hideOnSinglePage: true }}
-              scroll={{ x: "max-content" }}
-            />
-          </Space>
+          <Tabs
+            items={[
+              {
+                key: "score",
+                label: "7-day score",
+                children: (
+                    <Space direction="vertical" size={16} style={{ width: "100%" }}>
+                      {/* Plain flex row: Space items can't shrink, so the category bar would push the page wider on phones. */}
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "space-between" }}>
+                        <div style={{ overflowX: "auto", maxWidth: "100%", minWidth: 0 }}>
+                          <Segmented options={categories} value={category} onChange={(v) => setCategory(String(v))} />
+                        </div>
+                        <Input.Search
+                          allowClear
+                          placeholder="Search technology"
+                          onChange={(e) => setQuery(e.target.value)}
+                          style={{ width: 220 }}
+                        />
+                      </div>
+                      <Table<TopScore>
+                        rowKey="technologyId"
+                        columns={columns}
+                        dataSource={rows}
+                        size="middle"
+                        pagination={{ pageSize: 15, hideOnSinglePage: true }}
+                        expandable={{
+                          expandedRowRender: (row) => (
+                            <LastActivePanel lastActive={snapshot.lastActive[String(row.technologyId)]} />
+                          ),
+                        }}
+                      />
+                    </Space>
+                ),
+              },
+              {
+                key: "hourly",
+                label: "Latest hour",
+                children: <HourlyTable windowStart={snapshot.hourly.windowStart} items={snapshot.hourly.items} />,
+              },
+            ]}
+          />
         </Card>
 
         <HowScoreWorks />
