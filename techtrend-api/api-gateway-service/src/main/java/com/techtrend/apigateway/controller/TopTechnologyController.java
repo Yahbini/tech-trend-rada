@@ -18,7 +18,7 @@ import java.util.List;
 public class TopTechnologyController {
   TopTechnologyService topTechnologyService;
 
-  @GetMapping("/top")
+  @GetMapping("/top/hourly")
   public List<TopTechnologyResponse> findTopTechnologies(@Valid TopTechnologiesRequest request) {
     return topTechnologyService.findTop(request);
   }
