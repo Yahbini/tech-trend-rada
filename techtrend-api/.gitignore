@@ -1,0 +1,31 @@
+# Applies to every Maven module below; module-level .gitignore files only add to this.
+
+# Build output (incl. generated Avro / gRPC sources)
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Spring Initializr leftovers
+HELP.md
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# Logs
+*.log
+mention-log.txt
