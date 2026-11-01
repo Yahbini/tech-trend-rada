@@ -2,7 +2,7 @@
 
 import { Empty, Table, Tag, Typography } from "antd";
 import type { TableColumnsType } from "antd";
-import { CATEGORY_COLORS, formatGrowth, formatWindow } from "@/lib/format";
+import { CATEGORY_COLORS, formatGrowth, formatWindowVn } from "@/lib/format";
 import type { HourlyTrend } from "@/types/score";
 
 /** Ranking inside the latest closed 1h window (GET /top/hourly), by mention count. */
@@ -33,8 +33,7 @@ export default function HourlyTable({ windowStart, items }: { windowStart: strin
   return (
     <>
       <Typography.Paragraph type="secondary">
-        Mentions inside the latest closed 1-hour window: <Typography.Text strong>{formatWindow(windowStart)}</Typography.Text>.
-        Hourly data only exists while crawlers are running, so this window can be older than the snapshot.
+        Latest hour with data: <Typography.Text strong>{formatWindowVn(windowStart)}</Typography.Text>
       </Typography.Paragraph>
       <Table<HourlyTrend>
         rowKey="technologyId"

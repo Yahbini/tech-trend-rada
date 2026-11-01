@@ -20,3 +20,10 @@ export function formatWindow(iso: string | null | undefined): string {
 export function formatGrowth(velocity: number): string {
   return `${velocity > 0 ? "+" : ""}${Math.round(velocity * 100)}%`;
 }
+
+/** "2026-10-19T11:00:00Z" -> "2026-10-19 18:00 (UTC+7)"; fixed offset so build machine timezone does not matter. */
+export function formatWindowVn(iso: string | null | undefined): string {
+  if (!iso) return "—";
+  const vn = new Date(new Date(iso).getTime() + 7 * 3600 * 1000).toISOString();
+  return vn.slice(0, 16).replace("T", " ") + " (UTC+7)";
+}
